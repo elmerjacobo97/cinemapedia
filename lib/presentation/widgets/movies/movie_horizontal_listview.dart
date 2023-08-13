@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:cinemapedia/config/helpers/human_formats.dart';
 import 'package:cinemapedia/domain/entities/movie.dart';
 import 'package:flutter/material.dart';
 
@@ -30,8 +31,7 @@ class MovieHorizontalList extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   physics: const BouncingScrollPhysics(),
                   itemBuilder: (context, index) {
-                    final movie = movies[index];
-                    return _Slide(movie: movie);
+                    return _Slide(movie: movies[index]);
                   }))
         ],
       ),
@@ -61,8 +61,11 @@ class _Slide extends StatelessWidget {
               width: 150,
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress != null) {
-                  return const Center(
-                    child: CircularProgressIndicator(strokeWidth: 2),
+                  return const Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: Center(
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    ),
                   );
                 }
                 return FadeIn(child: child);
@@ -77,21 +80,26 @@ class _Slide extends StatelessWidget {
             width: 150,
             child: Text(
               movie.title,
-              maxLines: 2,
+              maxLines: 1,
               style: textStyle.titleSmall,
             )),
-        Row(children: [
-          Icon(Icons.star_outline, color: Colors.amber.shade800),
-          const SizedBox(
-            width: 5,
-          ),
-          Text(movie.voteAverage.toString(),
-              style:
-                  textStyle.bodySmall?.copyWith(color: Colors.amber.shade800)),
-          const SizedBox(
-            width: 5,
-          ),
-        ])
+        SizedBox(
+          width: 150,
+          child: Row(children: [
+            Icon(Icons.star_half_outlined, color: Colors.amber.shade800),
+            const SizedBox(
+              width: 5,
+            ),
+            Text('${movie.voteAverage}',
+                style: textStyle.bodyMedium
+                    ?.copyWith(color: Colors.amber.shade800)),
+            const Spacer(),
+            Text(
+              HumanFormats.number(movie.popularity),
+              style: textStyle.bodyMedium,
+            )
+          ]),
+        )
       ]),
     );
   }
@@ -101,7 +109,7 @@ class _Title extends StatelessWidget {
   final String? title;
   final String? subTitle;
 
-  const _Title({super.key, this.title, this.subTitle});
+  const _Title({this.title, this.subTitle});
 
   @override
   Widget build(BuildContext context) {
